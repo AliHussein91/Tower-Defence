@@ -1,45 +1,55 @@
-class Building {
+class Building extends Sprite {
     constructor({ position = { x: 0, y: 0 } }) {
-        this.postion = position;
+        super({
+            position,
+            imgSrc: "img/tower.png",
+            frames: { max: 19 },
+            offset: { x: 0, y: -80 },
+        });
         this.width = 64 * 2;
         this.height = 64;
         this.center = {
-            x: this.postion.x + this.width / 2,
-            y: this.postion.y + this.height / 2,
+            x: this.position.x + this.width / 2,
+            y: this.position.y + this.height / 2,
         };
         this.projectiles = [];
         this.radius = 250;
         this.target;
-        this.frame = 0;
     }
 
     draw() {
-        c.fillStyle = "blue";
-        c.fillRect(this.postion.x, this.postion.y, this.width, this.height);
+        super.draw();
 
-        c.beginPath();
-        c.fillStyle = "rgba(255,30,80,.10)";
-        c.arc(this.center.x, this.center.y, this.radius, 0, Math.PI * 2);
-        c.fill();
+        // c.beginPath();
+        // c.fillStyle = "rgba(0, 170, 128, 0.048)";
+        // c.arc(this.center.x, this.center.y, this.radius, 0, Math.PI * 2);
+        // c.fill();
     }
 
     update() {
         this.draw();
-        this.frame++;
-        this.shoot();
-    }
 
-    shoot() {
-        if (this.frame % 50 === 0 && this.target) {
-            this.projectiles.push(
-                new Projectile({
-                    position: {
-                        x: this.center.x,
-                        y: this.center.y,
-                    },
-                    enemy: this.target,
-                })
-            );
+        if (this.target || (!this.target && this.frames.current !== 0)) {
+            super.update();
         }
+
+        if (
+            this.target &&
+            this.frames.current === 5 &&
+            this.frames.elapsed % this.frames.hold === 0
+        ) {
+            this.shoot();
+        }
+    }
+    shoot() {
+        this.projectiles.push(
+            new Projectile({
+                position: {
+                    x: this.center.x,
+                    y: this.center.y,
+                },
+                enemy: this.target,
+            })
+        );
     }
 }

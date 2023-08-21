@@ -1,6 +1,6 @@
-class Enemy {
+class Enemy extends Sprite {
     constructor({ position = { x: waypoints[0].x, y: waypoints[0].y } }) {
-        this.position = position;
+        super({ position, imgSrc: "img/orc.png", frames: { max: 7 } });
         this.width = 100;
         this.height = 100;
         this.waypointIndex = 0;
@@ -13,20 +13,17 @@ class Enemy {
             y: 0,
         };
         this.radius = 50;
-        this.speed = 5;
+        this.speed = 2;
         this.health = 100;
     }
 
     draw() {
-        c.beginPath();
-        c.fillStyle = "red";
-        c.arc(this.center.x, this.center.y, this.radius, 0, Math.PI * 2);
-        c.fill();
-
-        c.fillStyle = "red";
+        super.draw();
+        super.update()
+        c.fillStyle = "#750000";
         c.fillRect(this.position.x, this.position.y - 15, this.width, 10);
 
-        c.fillStyle = "green";
+        c.fillStyle = "#299217";
         c.fillRect(
             this.position.x,
             this.position.y - 15,

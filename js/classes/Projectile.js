@@ -1,24 +1,23 @@
-class Projectile {
+class Projectile extends Sprite {
     constructor({ position = { x: 0, y: 0 }, enemy }) {
-        this.position = position;
+        super({
+            position,
+            imgSrc: "img/projectile.png",
+            frames: { max: 1 },
+            offset: { x: -21, y: -112 },
+        });
         this.velocity = {
             x: 0,
             y: 0,
         };
         this.enemy = enemy;
-        this.speed = 5;
-        this.radius = 10
-    }
-
-    draw() {
-        c.beginPath();
-        c.fillStyle = "orange";
-        c.arc(this.position.x, this.position.y, 10, 0, Math.PI * 2);
-        c.fill();
+        this.speed = 4;
+        this.radius = 10;
     }
 
     update() {
         this.draw();
+        super.update()
         const xDistance = this.enemy.center.x - this.position.x;
         const yDistance = this.enemy.center.y - this.position.y;
         const angle = Math.atan2(yDistance, xDistance);

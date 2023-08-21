@@ -41,9 +41,14 @@ placementTilesData2D.forEach((row, y) => {
 const enemies = [];
 
 let enemiesCount = 5;
+const explosions = [];
 
 let hearts = 10,
-    coins = 100;
+    coins = 100,
+    wave,
+    waveHealth,
+    buildingPrice = 50,
+    coinsEarnedPerKill = 10;
 
 function spawnEnemies(count) {
     for (let i = 1; i <= count; i++) {
@@ -84,10 +89,21 @@ function animate() {
         enemiesCount = Math.round(enemiesCount * (1 + Math.random()));
         spawnEnemies(enemiesCount);
     }
-    // const heartCount = document.querySelector(".hearts");
-    // heartCount.innerText = hearts;
-    // const coinsCount = document.querySelector(".coins");
-    // coinsCount.innerHTML = coins;
+
+    for (let i = explosions.length - 1; i >= 0; i--) {
+        const explosion = explosions[i];
+        explosion.draw();
+        explosion.update();
+
+        if (explosion.frames.current >= explosion.frames.max - 1) {
+            explosions.splice(i, 1);
+        }
+    }
+
+    const heartCount = document.querySelector("#hearts");
+    heartCount.innerHTML = hearts;
+    const coinsCount = document.querySelector("#coins");
+    coinsCount.innerHTML = coins;
 
     placementTiles.forEach((tile) => {
         tile.update(mouse);
@@ -117,10 +133,24 @@ function animate() {
             const distance = Math.hypot(xDifferance, yDifferance);
 
             if (distance < projectile.enemy.radius + projectile.radius) {
+                explosions.push(
+                    new Sprite({
+                        position: {
+                            x: projectile.position.x,
+                            y: projectile.position.y,
+                        },
+                        imgSrc: "img/explosion.png",
+                        frames: { max: 4 },
+                        offset: {
+                            x: -21,
+                            y: -112,
+                        },
+                    })
+                );
                 building.projectiles.splice(i, 1);
                 projectile.enemy.health -= 20;
                 if (projectile.enemy.health <= 0) {
-                    coins += 20;
+                    coins += coinsEarnedPerKill;
                     const enemyIndex = enemies.findIndex((enemy) => {
                         return projectile.enemy === enemy;
                     });
@@ -135,8 +165,8 @@ function animate() {
 }
 
 canvas.addEventListener("click", (event) => {
-    if (activeTile && !activeTile.occupied && coins - 75 >= 0) {
-        coins -= 75;
+    if (activeTile && !activeTile.occupied && coins - buildingPrice >= 0) {
+        coins -= buildingPrice;
         buildings.push(
             new Building({
                 position: {
@@ -146,6 +176,9 @@ canvas.addEventListener("click", (event) => {
             })
         );
         activeTile.occupied = true;
+        buildings.sort((a, b) => {
+            return a.position.y - b.position.y;
+        });
     }
 });
 
