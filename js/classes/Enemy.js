@@ -1,5 +1,5 @@
 class Enemy extends Sprite {
-    constructor({ position = { x: waypoints[0].x, y: waypoints[0].y } }) {
+    constructor({ position = { x: waypoints[level].path[0].x, y: waypoints[level].path[0].y } }) {
         super({ position, imgSrc: "img/orc.png", frames: { max: 7 } });
         this.width = 100;
         this.height = 100;
@@ -30,12 +30,13 @@ class Enemy extends Sprite {
             this.width * (this.health / 100),
             10
         );
+
     }
 
     update() {
         this.draw();
 
-        const waypoint = waypoints[this.waypointIndex];
+        const waypoint = waypoints[level].path[this.waypointIndex];
         const xDistance = waypoint.x - this.center.x;
         const yDistance = waypoint.y - this.center.y;
         const angle = Math.atan2(yDistance, xDistance);
@@ -56,7 +57,7 @@ class Enemy extends Sprite {
                 Math.abs(this.velocity.x * this.speed) &&
             Math.abs(Math.round(waypoint.y) - Math.round(this.center.y)) <
                 Math.abs(this.velocity.y * this.speed) &&
-            this.waypointIndex < waypoints.length - 1
+            this.waypointIndex < waypoints[level].path.length - 1
         ) {
             this.waypointIndex++;
         }
