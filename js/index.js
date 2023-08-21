@@ -9,6 +9,7 @@ c.fillStyle = "white";
 c.fillRect(0, 0, canvas.width, canvas.height);
 
 // Game status data
+const waveComing = document.querySelector(".wave");
 
 let level = 0,
     maxLevel = 1,
@@ -20,8 +21,9 @@ let level = 0,
     coinsEarnedPerKill = 10,
     initialEnemiesCount = 5,
     placementTiles = [],
-    buildings = [];
-enemies = [];
+    buildings = [],
+    enemies = [];
+let time;
 
 // Loading a background image to the canvas
 const map = new Image();
@@ -94,6 +96,10 @@ function spawnEnemies(count) {
         }
     }
     wave++;
+    waveComing.style.display = "flex";
+    time = setTimeout(() => {
+        waveComing.style.display = "none";
+    }, 1000);
 }
 
 spawnEnemies(initialEnemiesCount);
@@ -103,7 +109,7 @@ function animate() {
     // Starting screen animation and recording the animation ID
     const animationId = window.requestAnimationFrame(animate);
 
-    if (wave === 2 && level < maxLevel) {
+    if (wave === 10 && level < maxLevel) {
         window.cancelAnimationFrame(animationId);
         wave = 0;
         level++;
@@ -118,6 +124,7 @@ function animate() {
     heartCount.innerHTML = hearts;
     const coinsCount = document.querySelector("#coins");
     coinsCount.innerHTML = coins;
+    waveComing.innerHTML = `Wave ${wave}`;
 
     // Drawing enemies and updating them on the map
     for (let i = enemies.length - 1; i >= 0; i--) {
