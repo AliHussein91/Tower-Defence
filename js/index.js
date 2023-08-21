@@ -16,7 +16,7 @@ let level = 0,
     wave = 0,
     hearts = 10,
     coins = 100,
-    waveHealth = 1,
+    waveHealth = 20,
     buildingPrice = 50,
     coinsEarnedPerKill = 10,
     initialEnemiesCount = 5,
@@ -220,7 +220,8 @@ function animate() {
 
                 // Removing projectile after collision and decreasing enemy health
                 building.projectiles.splice(i, 1);
-                projectile.enemy.health -= 20;
+                waveHealth = 20 - wave
+                projectile.enemy.health -= waveHealth;
 
                 // Removing enemy if health is down to zero and increasing coins
                 if (projectile.enemy.health <= 0) {
